@@ -1,3 +1,8 @@
+/*
+ * Created by Alex Lee
+ * April 13, 2018
+ */
+
 #include <avr/sleep.h>
 #include <Keypad.h>
 #include <StackArray.h>
@@ -6,6 +11,7 @@
 const int interruptPin = 2;
 const int outPin = 11;
 const int led = 10;
+
 char correctPasscode[] = "0214";
 const byte ROWS = 4; //four rows
 const byte COLS = 3; //three columns
