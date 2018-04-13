@@ -1,8 +1,6 @@
-#include <avr/sleep.h>
 #include <Keypad.h>
 #include <EEPROM.h>
 
-const int interruptPin = 2;
 const int inputled = 11;
 const int correctled = 2;
 
@@ -27,7 +25,6 @@ void setup()
 {
   pinMode(inputled, OUTPUT);
   pinMode(correctled, OUTPUT);
-  Serial.begin(9600);
   readPasscode();
 }
 
@@ -40,31 +37,24 @@ void loop()
 
   if(key == '#'){
     enterLED();
-    Serial.println(F("Enter passcode change"));
     changePasscode();
     updatePasscode();
   }  
   else if(key == '*'){
     enterLED();
     unlockDoor();
-    Serial.println(F("Exited out of code entry"));
   }
   else if (key != NO_KEY){
     idleLED();
-    Serial.println(F("Press * to enter passcode, # to change pass"));
   }    
 }
 
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------read from eeprom
 void readPasscode(){
-  Serial.println((char)EEPROM.read(1));
   correctPasscode[0] = EEPROM.read(1);
-  Serial.println((char)EEPROM.read(2));
   correctPasscode[1] = EEPROM.read(2);
-  Serial.println((char)EEPROM.read(3));
   correctPasscode[2] = EEPROM.read(3);
-  Serial.println((char)EEPROM.read(4));
   correctPasscode[3] = EEPROM.read(4);
 }
 
@@ -134,8 +124,6 @@ void keyEntry(char *entered){
     key = keypad.getKey();
     if(key!= NO_KEY){
       enterLED();
-      Serial.print(F("pushed: "));
-      Serial.println(key);
       *(entered + characterCount) = key;
       characterCount++;
     }
@@ -148,7 +136,6 @@ void keyEntry(char *entered){
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------unlockDoor
 void unlockDoor(){
-  Serial.println(F("you can now enter passcode"));
   //allocate memory for entering of passcode
   char *entered = malloc(4*sizeof(char));
 
@@ -157,10 +144,8 @@ void unlockDoor(){
   bool correct = checkPassword(entered, &correctPasscode[0]);
 
   if(correct == true){
-    Serial.println(F("Door Unlocked"));
     enteredLED();
   }else{
-    Serial.println(F("Wrong passcode!"));
     wrongLED();
   }
   free(entered);
@@ -183,7 +168,6 @@ boolean checkPassword(char* entered, char* check){
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------changePasscode
 void changePasscode(){
-  Serial.println(F("enter original passcode to continue"));
   //cannot return an array so use pointers
   char *entered = malloc(4*sizeof(char));;
   keyEntry(entered);
@@ -191,7 +175,6 @@ void changePasscode(){
   if(checkPassword(entered, &correctPasscode[0]) == true){
     SetNewPass();
   }else{
-    Serial.println(F("You do not have admin access!"));
     wrongLED();
   }
   free(entered);
@@ -201,22 +184,18 @@ void changePasscode(){
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------SetNewPass
 void SetNewPass(){
-  Serial.println(F("Enter new passcode"));
   char *entered = malloc(4*sizeof(char));
   char *check = malloc(4*sizeof(char));
   keyEntry(entered);
-  Serial.println(F("Now enter again"));
   keyEntry(check);
 
   if(checkPassword(entered, check) == false){
-    Serial.println(F("new passcodes do not match"));
     wrongLED();
   }else{
     for(byte countIndex = 0; countIndex < 4; countIndex++){
       correctPasscode[countIndex] = *(entered + countIndex);
     }
     changedPassLED();
-    Serial.println(F("Passcode updated"));
   }
 }
 
