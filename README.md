@@ -1,9 +1,9 @@
-#Description
+# Description
 
 The main goal of this project is to create a user-friendly, easy-to-use smart lock. Although the code was initially tested with an Arduino UNO, the ultimate goal is to create a stand alone device using the atmega328P-PU microcontroller that allows for minimal power consumption. To reduce cost and complexity, future goal includes to develop a version for the attiny85 while maintaining the same fundamental functionalities.
 
 
-###Current functionalities
+### Current functionalities
 * April 13, 2018, Version 1.0.0
  * Implemented using a 4 digit passcode
  * Use the onboard EEPROM to store the correct passcode
@@ -12,7 +12,7 @@ The main goal of this project is to create a user-friendly, easy-to-use smart lo
  * 5 seconds after the lock is opened, close it again
 
 
-###Future improvements
+### Future improvements
 * Allow the chip to enter deep sleep mode
 * Use button interrput to turn on the microcontroller
 * Within a certain time of inactivity from the keypad, re-enter sleep mode
