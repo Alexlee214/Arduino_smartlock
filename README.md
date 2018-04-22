@@ -21,3 +21,4 @@ The main goal of this project is to create a user-friendly, easy-to-use smart lo
 * Implement servo motor to replace the LED indication lights
 * Decrease dynamic memory usage
 * Implement for attiny85 (512 bytes SRAM)
+* Use the concept of voltage divider to reduce pins used by key pad to only 1

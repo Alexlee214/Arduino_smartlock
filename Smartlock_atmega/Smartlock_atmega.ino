@@ -1,10 +1,11 @@
+
 //#include <avr/sleep.h>
 #include <Keypad.h>
 #include <EEPROM.h>
 
 //const int interruptPin = 2;
 const int inputled = 11;
-const int correctled = 2;
+const int correctled = 10;
 
 const int led = 10;
 const byte ROWS = 4; //four rows
