@@ -1,14 +1,15 @@
 //#include <avr/sleep.h>
 #include <Keypad.h>
 #include <EEPROM.h>
+#include <Servo.h> 
 
+const int servoPin = A0;
 const int inputled = 11;
 const int correctled = 10;
+const int led = 10;
 
 byte correctLength = 4;
 byte passMaxLength = 8;
-
-const int led = 10;
 const byte ROWS = 4; //four rows
 const byte COLS = 3; //three columns
 char keys[ROWS][COLS] = {
@@ -20,15 +21,20 @@ char keys[ROWS][COLS] = {
 byte rowPins[ROWS] = {3, 4, 5, 6}; //connect to the row pinouts of the keypad
 byte colPins[COLS] = {7, 8, 9}; //connect to the column pinouts of the keypad
 Keypad keypad = Keypad( makeKeymap(keys), rowPins, colPins, ROWS, COLS );
-
+Servo Servo1; 
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------setup
 void setup()
 {
   pinMode(inputled, OUTPUT);
   pinMode(correctled, OUTPUT);
+  
   Serial.begin(9600);
-  initializeEEPROM();
+  /*IMPORTANT: COMMENT OUT THE FOLLOWING LINE AND UPLOA AGAIN AFTER UPLOADING FOR THE FIRST TIME*/
+  //initializeEEPROM();
+  correctLength = EEPROM.read(0);
+  Servo1.attach(servoPin); 
+  Servo1.write(180);
 }
 
 
@@ -56,8 +62,6 @@ void loop()
 
 //password stored starting from index 0
 char readPasscode(byte location){
-  Serial.print("EEPROM IS READING: ");
-  Serial.println(EEPROM.read(location));
   return EEPROM.read(location);
 }
 
@@ -67,10 +71,11 @@ void updatePasscode(byte location, char newPass){
 
 
 void initializeEEPROM(){
-  EEPROM.write(0, '0');
-  EEPROM.write(1, '2');
-  EEPROM.write(2, '1');
-  EEPROM.write(3, '4');
+  EEPROM.write(0, correctLength);
+  EEPROM.write(1, '0');
+  EEPROM.write(2, '2');
+  EEPROM.write(3, '1');
+  EEPROM.write(4, '4');
 }
 
 
@@ -100,9 +105,11 @@ void changedPassLED(){
 }
 
 void enteredLED(){
+    Servo1.write(0); 
     digitalWrite(correctled, HIGH);
     delay(5000);
     digitalWrite(correctled, LOW);
+    Servo1.write(180); 
 }
 
 void wrongLED(){
@@ -132,7 +139,7 @@ byte keyEntry(char *entered){
     currTime = millis();
     //if more than 6 seconds on inactivity, return
     if((currTime - prevTime) > 6000){
-      Serial.println("Session timeout");
+      Serial.println(F("Session timeout"));
       return 0;
     }
 
@@ -169,8 +176,6 @@ void unlockDoor(){
 
   //assign the entered passcode
   byte passLength = keyEntry(entered);
-  Serial.println("The length of the pass entered is: ");
-  Serial.println(passLength);
   bool correct = checkPassword(entered, passLength);
 
   if(correct == true){
@@ -194,7 +199,7 @@ boolean checkPassword(char* entered, byte passLength){
     return false;
   
   for(byte countIndex = 0; countIndex < passLength; countIndex++){
-    if(*(entered + countIndex) != readPasscode(countIndex))
+    if(*(entered + countIndex) != readPasscode(countIndex + 1))
       return false;
   }
 
@@ -258,8 +263,11 @@ void SetNewPass(){
     wrongLED();
   }else{
     correctLength = newLength;
+    //change the stored passcode length
+    EEPROM.write(0, correctLength);
+    //change the passcode stored
     for(byte countIndex = 0; countIndex < newLength; countIndex++){
-      updatePasscode(countIndex, *(entered + countIndex));
+      updatePasscode(countIndex + 1, *(entered + countIndex));
     }
     changedPassLED();
     Serial.println(F("Passcode updated"));
