@@ -225,7 +225,7 @@ boolean checkMatch(char* entered, char* check, byte passLength, byte checkLength
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------changePasscode
 void changePasscode(){
-  Serial.println(F("enter original passcode to continue"));
+  Serial.println(F("enter original passcode: "));
   //cannot return an array so use pointers
   char *entered = malloc(passMaxLength*sizeof(char));;
   byte passLength = keyEntry(entered);
@@ -233,7 +233,7 @@ void changePasscode(){
   if(checkPassword(entered, passLength) == true){
     SetNewPass();
   }else{
-    Serial.println(F("You do not have admin access!"));
+    Serial.println(F("No admin access!"));
     wrongLED();
   }
   free(entered);
@@ -254,12 +254,12 @@ void SetNewPass(){
     return;
   }  
   
-  Serial.println(F("Now enter again"));
+  Serial.println(F("Enter again"));
   byte checkLength = keyEntry(check);
 
   //deal with cases where length not matching or password not matching
   if(newLength != checkLength || checkMatch(entered, check, newLength, checkLength) == false){
-    Serial.println(F("new passcodes do not match"));
+    Serial.println(F("Passcodes do not match"));
     wrongLED();
   }else{
     correctLength = newLength;
