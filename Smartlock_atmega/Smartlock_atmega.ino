@@ -51,6 +51,9 @@ void loop()
     Serial.println(F("Exited out of code entry"));
   }
   else if (key != NO_KEY){
+    digitalWrite(correctled, HIGH);
+    delay(500);
+    digitalWrite(correctled, LOW);
     idleLED();
     Serial.println(F("Press * to enter passcode, # to change pass"));
   }    

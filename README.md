@@ -3,9 +3,9 @@ The main goal of this project is to create a user-friendly, easy-to-use smart lo
 
 
 
-### Current functionalities
+## Current functionalities
 * April 22, 2018, Version 1.0.1
- * Passcode can be anywhere from 1 to 7 characters long
+ * Passcode can be anywhere from 1 to 8 characters long
  * Auto session timeout after 6 seconds in passcode entry mode
  * Memory optimization by reading password directly from EEPROM(Therotically reading from EEPROM would be slower than SRAM, but barely noticiable in this case)
  * Improved security by storing the length of the current password length
@@ -20,7 +20,7 @@ The main goal of this project is to create a user-friendly, easy-to-use smart lo
 
 
 
-### Future improvements
+## Future improvements
 * Allow the chip to enter deep sleep mode
 * Use button interrput to turn on the microcontroller
 * Within a certain time of inactivity from the keypad, re-enter sleep mode
@@ -30,14 +30,15 @@ The main goal of this project is to create a user-friendly, easy-to-use smart lo
 * Decrease dynamic memory usage
 * Implement for attiny85 (512 bytes SRAM)
 * Use the concept of voltage divider to reduce pins used by key pad to only 1
+* Implement password with hasing, salt and pepper for improved security
 
 
 
-### Appendix
+## Appendix
 * EEPROM:
  - 0th index stores length of the passcode
- - 1st - 7th indices store the password
+ - 1st - 8th indices store the password
  
 * When uploading code  should be done twice
  - First time to initialize EEPROM to the original passcode, which is set to 0214
- - Second time initializtion should be commented out (line 31)
+ - Second time initializtion should be commented out (line 44)

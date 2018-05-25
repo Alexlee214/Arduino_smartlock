@@ -195,7 +195,8 @@ byte keyEntry(char *entered){
       return passMaxLength;
     }
     if(key!= NO_KEY && key != '#'){
-      
+      lcd.setCursor(characterCount, 1);
+      lcd.print(F("*"));
       prevTime = currTime;
       enterLED();
       *(entered + characterCount) = key;
@@ -276,6 +277,8 @@ boolean checkMatch(char* entered, char* check, byte passLength, byte checkLength
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------changePasscode
 void changePasscode(){
   Serial.println(F("enter original passcode: "));
+  lcd.clear();
+  lcd.print(F("Original pass:"));
   //cannot return an array so use pointers
   char *entered = malloc(passMaxLength*sizeof(char));;
   byte passLength = keyEntry(entered);
@@ -284,6 +287,8 @@ void changePasscode(){
     SetNewPass();
   }else{
     Serial.println(F("No admin access!"));
+    lcd.clear();
+    lcd.print(F("Non Authorized!!"));
     wrongLED();
   }
   free(entered);
@@ -318,16 +323,16 @@ void SetNewPass(){
     wrongLED();
   }else{
     correctLength = newLength;
+    changedPassLED();
+    Serial.println(F("Passcode updated"));
+    lcd.clear();
+    lcd.print(F("Pass Updated!!!!"));
     //change the stored passcode length
     EEPROM.write(0, correctLength);
     //change the passcode stored
     for(byte countIndex = 0; countIndex < newLength; countIndex++){
       updatePasscode(countIndex + 1, *(entered + countIndex));
     }
-    changedPassLED();
-    Serial.println(F("Passcode updated"));
-    lcd.clear();
-    lcd.print(F("Pass Updated!!!!"));
   }
   free(entered);
   free(check);
